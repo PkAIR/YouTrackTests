@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+}
+
+group 'org.youtrack.tests'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile('com.codeborne:selenide:5.8.0')
+    compile('log4j:log4j:1.2.17')
+    compile('com.github.javafaker:javafaker:0.15')
+    testCompile('org.junit.jupiter:junit-jupiter-api:5.3.1')
+    testCompile('org.junit.jupiter:junit-jupiter-engine:5.3.1')
+    testCompile('org.junit.jupiter:junit-jupiter-params:5.3.1')
+}
+
+test {
+    systemProperties = System.properties
+    useJUnitPlatform()
+    testLogging.showStandardStreams = true
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+task chrome(type: Test) {
+    systemProperties['selenide.browser'] = 'chrome'
+}
+
+task firefox(type: Test) {
+    systemProperties['selenide.browser'] = 'firefox'
+}
