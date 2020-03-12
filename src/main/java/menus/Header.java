@@ -7,8 +7,7 @@ import org.openqa.selenium.By;
 import pages.LoginPage;
 import pages.UsersPage;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.page;
+import static com.codeborne.selenide.Selenide.*;
 
 public class Header {
     private SelenideElement userNameLink = $(By.xpath("//a[contains(@data-ring-dropdown, 'Log out')]"));
@@ -18,9 +17,11 @@ public class Header {
     private SelenideElement questionMarkIcon = $(By.xpath("//span[@class='ring-menu__item__i ring-font-icon ring-font-icon_help']"));
 
     public LoginPage logOutUser(User user) {
-        $(By.xpath(String.format("//span[@class='ring-menu__item__i'][text()='%s']",
+        if (isSmbLoggedIn()) {
+            $(By.xpath(String.format("//span[@class='ring-menu__item__i'][text()='%s']",
                 user.getFullName().equals("") ? user.getUsername() : user.getFullName()))).hover().click();
-        logOutBtn.should(Condition.appear).click();
+            logOutBtn.should(Condition.appear).click();
+        }
 
         return page(LoginPage.class);
     }
@@ -42,6 +43,10 @@ public class Header {
     }
 
     public boolean isSmbLoggedIn() {
-        return questionMarkIcon.isDisplayed();
+        try {
+            return questionMarkIcon.waitUntil(Condition.enabled, 2000).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

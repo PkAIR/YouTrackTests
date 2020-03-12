@@ -1,4 +1,4 @@
-package basetests;
+package base.tests;
 
 import model.User;
 import pages.DashboardPage;
@@ -23,15 +23,14 @@ public class BaseTest {
                 "", "", "");
     }
 
-    public static void openUsersPage() {
+    public static void openUsersPageAsRootUser() {
         LoginPage lp = open(baseUrl, LoginPage.class);
         DashboardPage dp = lp.loginAs(rootUser);
         dp.Header.openUsersPage();
     }
 
-    public void logOutUser() throws InterruptedException {
+    public static void logOutUser() {
         DashboardPage dp = page(DashboardPage.class);
-        Thread.sleep(1000);
         dp.Header.logOutUser();
     }
 }

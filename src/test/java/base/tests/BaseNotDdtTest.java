@@ -1,6 +1,5 @@
-package basetests;
+package base.tests;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -14,11 +13,6 @@ public class BaseNotDdtTest extends BaseTest{
 
     @BeforeEach
     public void beforeEachSetup() {
-        openUsersPage();
-    }
-
-    @AfterEach
-    public void afterEach() throws InterruptedException {
-        logOutUser();
+        openUsersPageAsRootUser();
     }
 }

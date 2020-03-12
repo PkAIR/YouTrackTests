@@ -1,4 +1,6 @@
-import basetests.BaseDdtTest;
+package create.user.tests;
+
+import base.tests.BaseDdtTest;
 import model.User;
 import model.UserFactory;
 import org.junit.jupiter.api.AfterAll;
@@ -8,7 +10,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import overlays.CreateUserOverlay;
-import pages.DashboardPage;
 import pages.UsersPage;
 
 import java.util.stream.Stream;
@@ -44,13 +45,6 @@ public class CreateUserOverlayUiTests extends BaseDdtTest {
         assertEquals(up.CommonMenu.getUserNumber(), curNumOfUsers, message);
     }
 
-    private static Stream<Arguments> testDataForOverlayClosingProvider() {
-        return Stream.of(
-                arguments("cancel", "Number of users changed"),
-                arguments("close", "Number of users changed")
-        );
-    }
-
     @DisplayName("Test for Create user overlay is movable")
     @Test
     public void movingCreateUserOverlay() {
@@ -63,7 +57,13 @@ public class CreateUserOverlayUiTests extends BaseDdtTest {
 
     @AfterAll
     public static void tearDown() {
-        DashboardPage dp = page(DashboardPage.class);
-        dp.Header.logOutUser();
+        logOutUser();
+    }
+
+    private static Stream<Arguments> testDataForOverlayClosingProvider() {
+        return Stream.of(
+                arguments("cancel", "Number of users changed"),
+                arguments("close", "Number of users changed")
+        );
     }
 }

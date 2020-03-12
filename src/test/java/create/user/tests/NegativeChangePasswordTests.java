@@ -1,4 +1,6 @@
-import basetests.BaseDdtTest;
+package create.user.tests;
+
+import base.tests.BaseDdtTest;
 import model.User;
 import model.UserFactory;
 import org.junit.jupiter.api.AfterAll;
@@ -25,13 +27,11 @@ public class NegativeChangePasswordTests extends BaseDdtTest {
     public static void createUser() {
         testUser = UserFactory.getUserAllFlds();
         LoginPage lp = page(LoginPage.class);
-        DashboardPage dp = page(DashboardPage.class);
         UsersPage up = page(UsersPage.class);
+        DashboardPage dp = page(DashboardPage.class);
 
-        int curNumOfUsers = up.CommonMenu.getUserNumber();
         up.createUser(testUser, true);
-        assertTrue(up.CommonMenu.getUserNumber() > curNumOfUsers,
-                "Number of users doesn't change");
+        dp.Header.openUsersPage();
         assertTrue(up.isUserInTheTable(testUser));
 
         open(baseUrl, DashboardPage.class);
@@ -57,8 +57,7 @@ public class NegativeChangePasswordTests extends BaseDdtTest {
     @AfterAll
     public static void tearDown() {
         open(baseUrl, DashboardPage.class);
-        DashboardPage dp = page(DashboardPage.class);
-        dp.Header.logOutUser(testUser);
+        logOutUser();
     }
 
     private static Stream<Arguments> changePasswordNegativeDataProvider() {

@@ -43,16 +43,14 @@ public class UsersPage {
         return createUserBtn.isDisplayed();
     }
 
-    public UsersPage createUser(User user, boolean forcePasswordChange) {
+    public UserDetailPage createUser(User user, boolean forcePasswordChange) {
         DashboardPage dp = page(DashboardPage.class);
         UsersPage up = page(UsersPage.class);
 
         CreateUserOverlay ov = up.clickCreateUserBtn();
         ov.createNewUser(user, forcePasswordChange);
 
-        dp.Header.openUsersPage();
-
-        return page(UsersPage.class);
+        return page(UserDetailPage.class);
     }
 }
 

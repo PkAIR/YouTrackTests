@@ -1,4 +1,6 @@
-import basetests.BaseNotDdtTest;
+package create.user.tests;
+
+import base.tests.BaseNotDdtTest;
 import model.User;
 import model.UserFactory;
 import org.junit.jupiter.api.DisplayName;
@@ -6,16 +8,16 @@ import org.junit.jupiter.api.Test;
 import overlays.ChangePasswordOverlay;
 import pages.DashboardPage;
 import pages.LoginPage;
+import pages.UserDetailPage;
 import pages.UsersPage;
 
-import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.Selenide.page;
+import static com.codeborne.selenide.Selenide.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CreateUserPositiveTests extends BaseNotDdtTest {
     @DisplayName("General positive scenario for user creation")
     @Test
-    public void generalPositiveScenario() {
+    public void generalPositiveScenario() throws InterruptedException {
         User testUser = UserFactory.getUserAllFlds();
 
         LoginPage lp = page(LoginPage.class);
@@ -24,10 +26,9 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         createUser(testUser, false);
         assertTrue(up.isUserInTheTable(testUser));
 
-        open(baseUrl, DashboardPage.class);
+        open(String.format("%s/Dashboard", baseUrl), DashboardPage.class);
         up.Header.logOutUser(rootUser);
         lp.loginAs(testUser);
-        open(baseUrl, DashboardPage.class);
         dp.Header.logOutUser(testUser);
     }
 
@@ -41,7 +42,7 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         createUser(testUser, true);
         assertTrue(up.isUserInTheTable(testUser));
 
-        open(baseUrl, DashboardPage.class);
+        open(String.format("%s/Dashboard", baseUrl), DashboardPage.class);
         up.Header.logOutUser(rootUser);
         lp.loginAs(testUser);
 
@@ -51,16 +52,21 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         ChangePasswordOverlay cpo = page(ChangePasswordOverlay.class);
         cpo.changeThePassword(testUser);
 
-        open(baseUrl, DashboardPage.class);
+        open(String.format("%s/Dashboard", baseUrl), DashboardPage.class);
         dp.Header.logOutUser(testUser);
     }
 
     private void createUser(User testUser, boolean forcePasswordChange) {
         UsersPage up = page(UsersPage.class);
+        DashboardPage dp = page(DashboardPage.class);
 
         int curNumOfUsers = up.CommonMenu.getUserNumber();
-        up.createUser(testUser, forcePasswordChange);
+        UserDetailPage udp = up.createUser(testUser, forcePasswordChange);
+        assertTrue(udp.isUserCreated(testUser),
+                String.format("User %s wasn't created", testUser.getUsername()));
         assertTrue(up.CommonMenu.getUserNumber() > curNumOfUsers,
                 "Number of users doesn't change");
+
+        dp.Header.openUsersPage();
     }
 }
