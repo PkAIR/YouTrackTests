@@ -18,7 +18,7 @@ import static com.codeborne.selenide.Selenide.refresh;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class CreateNegativeTests2 extends BaseDdtTest {
+public class NotCompletedUserCreationTests extends BaseDdtTest {
     private static User testUser;
 
     @BeforeAll

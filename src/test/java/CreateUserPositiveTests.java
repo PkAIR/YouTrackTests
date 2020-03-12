@@ -12,7 +12,7 @@ import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.page;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CreateUserTests extends BaseNotDdtTest {
+public class CreateUserPositiveTests extends BaseNotDdtTest {
     @DisplayName("General positive scenario for user creation")
     @Test
     public void generalPositiveScenario() {

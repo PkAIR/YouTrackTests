@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class CreateUserNegativeTests extends BaseDdtTest {
+public class NegativeChangePasswordTests extends BaseDdtTest {
     private static User testUser;
 
     @BeforeAll
