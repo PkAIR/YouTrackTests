@@ -1,18 +1,14 @@
 package create.user.tests;
 
 import base.tests.BaseNotDdtTest;
-import model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import overlays.CreateUserOverlay;
 import overlays.ErrorOverlay;
-import pages.DashboardPage;
-import pages.LoginPage;
-import pages.UserDetailPage;
 import pages.UsersPage;
 
 import static com.codeborne.selenide.Selenide.page;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class NegativeUsersTests extends BaseNotDdtTest {
     @DisplayName("Negative scenario for user creation")
