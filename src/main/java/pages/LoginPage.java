@@ -14,7 +14,6 @@ public class LoginPage {
     public DashboardPage loginAs(User user) {
         loginFld.sendKeys(user.getUsername());
         passwordFld.sendKeys(user.getPassword());
-
         loginBtn.click();
 
         return page(DashboardPage.class);

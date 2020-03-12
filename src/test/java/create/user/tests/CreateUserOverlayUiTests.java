@@ -41,7 +41,7 @@ public class CreateUserOverlayUiTests extends BaseDdtTest {
         }
 
         assertTrue(up.pageIsVisible());
-        assertFalse(up.isUserInTheTable(testUser));
+        assertFalse(up.isUserInTheTable(testUser), "User not found in the table");
         assertEquals(up.CommonMenu.getUserNumber(), curNumOfUsers, message);
     }
 

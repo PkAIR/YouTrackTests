@@ -21,6 +21,7 @@ public class UsersPage {
 
     public CreateUserOverlay clickCreateUserBtn() {
         createUserBtn.click();
+
         return page(CreateUserOverlay.class);
     }
 
@@ -44,7 +45,6 @@ public class UsersPage {
     }
 
     public UserDetailPage createUser(User user, boolean forcePasswordChange) {
-        DashboardPage dp = page(DashboardPage.class);
         UsersPage up = page(UsersPage.class);
 
         CreateUserOverlay ov = up.clickCreateUserBtn();

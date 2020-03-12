@@ -13,6 +13,7 @@ public class ChangePasswordOverlay extends BaseOverlay {
     private SelenideElement newPasswordFld = $(By.id("id_l.U.ChangePasswordDialog.newPassword1"));
     private SelenideElement newPasswordConfirmationFld = $(By.id("id_l.U.ChangePasswordDialog.newPassword2"));
     private SelenideElement changePassText = $(By.xpath("//li[text()='Please change your password!']"));
+
     private SelenideElement okBtn = $(By.id("id_l.U.ChangePasswordDialog.passOk"));
 
     public void fillTheForm(User user) {
@@ -33,6 +34,7 @@ public class ChangePasswordOverlay extends BaseOverlay {
     public String getErrorTooltipText() {
         errorIndicator.shouldBe(Condition.visible);
         errorIndicator.hover();
+
         return errorTooltipIndicator.shouldBe(Condition.appears).text();
     }
 }

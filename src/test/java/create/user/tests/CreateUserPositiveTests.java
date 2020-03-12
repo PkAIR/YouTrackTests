@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class CreateUserPositiveTests extends BaseNotDdtTest {
     @DisplayName("General positive scenario for user creation")
     @Test
-    public void generalPositiveScenario() throws InterruptedException {
+    public void generalPositiveScenario() {
         User testUser = UserFactory.getUserAllFlds();
 
         LoginPage lp = page(LoginPage.class);
@@ -26,7 +26,7 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         createUser(testUser, false);
         assertTrue(up.isUserInTheTable(testUser));
 
-        open(String.format("%s/Dashboard", baseUrl), DashboardPage.class);
+        open(getDashboardUrl(), DashboardPage.class);
         up.Header.logOutUser(rootUser);
         lp.loginAs(testUser);
         dp.Header.logOutUser(testUser);
@@ -42,7 +42,7 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         createUser(testUser, true);
         assertTrue(up.isUserInTheTable(testUser));
 
-        open(String.format("%s/Dashboard", baseUrl), DashboardPage.class);
+        open(getDashboardUrl(), DashboardPage.class);
         up.Header.logOutUser(rootUser);
         lp.loginAs(testUser);
 
@@ -52,7 +52,7 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         ChangePasswordOverlay cpo = page(ChangePasswordOverlay.class);
         cpo.changeThePassword(testUser);
 
-        open(String.format("%s/Dashboard", baseUrl), DashboardPage.class);
+        open(getDashboardUrl(), DashboardPage.class);
         dp.Header.logOutUser(testUser);
     }
 
@@ -68,5 +68,9 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
                 "Number of users doesn't change");
 
         dp.Header.openUsersPage();
+    }
+
+    private String getDashboardUrl() {
+        return String.format("%s/Dashboard", baseUrl);
     }
 }
