@@ -1,5 +1,6 @@
 package overlays;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 
@@ -10,6 +11,7 @@ public class ErrorOverlay {
     private SelenideElement closeBtn = $(By.xpath("//a[@class='close']"));
 
     public String getErrorSeverityText() {
+        closeBtn.should(Condition.appear);
         return errorSeverity.text();
     }
 }

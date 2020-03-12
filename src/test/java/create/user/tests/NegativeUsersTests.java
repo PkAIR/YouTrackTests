@@ -1,6 +1,7 @@
 package create.user.tests;
 
 import base.tests.BaseNotDdtTest;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import overlays.CreateUserOverlay;
@@ -11,7 +12,7 @@ import static com.codeborne.selenide.Selenide.page;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class NegativeUsersTests extends BaseNotDdtTest {
-    @DisplayName("Negative scenario for user creation")
+    @DisplayName("Negative scenario for user creation (user duplication)")
     @Test
     public void generalPositiveScenario() {
         UsersPage up = page(UsersPage.class);
@@ -26,5 +27,10 @@ public class NegativeUsersTests extends BaseNotDdtTest {
 
         ErrorOverlay eo = page(ErrorOverlay.class);
         assertEquals("Removing null is prohibited", eo.getErrorSeverityText());
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        logOutUser();
     }
 }
