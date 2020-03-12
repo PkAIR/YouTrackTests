@@ -28,7 +28,9 @@ public class CreateUserOverlay extends BaseOverlay{
 
     public void fillTheForm(User user, boolean forcePassChange) {
         createUserOverlay.shouldBe(Condition.visible);
+        loginFld.clear();
         loginFld.sendKeys(user.getUsername());
+        passFld.clear();
         passFld.sendKeys(user.getPassword());
         passConfirmationFld.sendKeys(user.getPasswordConfirmation());
 
@@ -36,8 +38,11 @@ public class CreateUserOverlay extends BaseOverlay{
             forceSetPassCheckbox.click();
         }
 
+        fullNameFld.clear();
         fullNameFld.sendKeys(user.getFullName());
+        emailFld.clear();
         emailFld.sendKeys(user.getEmail());
+        jabberFld.clear();
         jabberFld.sendKeys(user.getJabber());
     }
 

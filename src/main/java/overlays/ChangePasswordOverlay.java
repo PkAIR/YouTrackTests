@@ -19,8 +19,12 @@ public class ChangePasswordOverlay extends BaseOverlay {
     public void fillTheForm(User user) {
         changePassText.shouldBe(Condition.visible);
         changePasswordOverlay.shouldBe(Condition.visible);
+
+        oldPasswordFld.clear();
         oldPasswordFld.sendKeys(user.getPassword());
+        newPasswordFld.clear();
         newPasswordFld.sendKeys(user.getNewPassword());
+        newPasswordConfirmationFld.clear();
         newPasswordConfirmationFld.sendKeys(user.getNewPasswordConfirmation());
     }
 

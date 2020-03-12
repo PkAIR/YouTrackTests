@@ -12,7 +12,9 @@ public class LoginPage {
     private SelenideElement loginBtn = $(By.id("id_l.L.loginButton"));
 
     public DashboardPage loginAs(User user) {
+        loginFld.clear();
         loginFld.sendKeys(user.getUsername());
+        passwordFld.clear();
         passwordFld.sendKeys(user.getPassword());
         loginBtn.click();
 
