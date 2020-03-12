@@ -3,6 +3,7 @@ import model.User;
 import model.UserFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -25,8 +26,9 @@ public class CreateNegativeTests2 extends BaseDdtTest {
         testUser = UserFactory.getUserAllFlds();
     }
 
+    @DisplayName("Negative tests for user creation")
     @ParameterizedTest
-    @MethodSource("stringIntAndListProvider")
+    @MethodSource("wrongUserDataProvider")
     public void wrongUserTest(String username, String password, String passConfirmation,
                               String message) {
         UsersPage up = page(UsersPage.class);
@@ -44,7 +46,7 @@ public class CreateNegativeTests2 extends BaseDdtTest {
         refresh();
     }
 
-    static Stream<Arguments> stringIntAndListProvider() {
+    private static Stream<Arguments> wrongUserDataProvider() {
         return Stream.of(
                 arguments("", "", "", "Login is required!"),
                 arguments("test", "", "", "Password is required!"),

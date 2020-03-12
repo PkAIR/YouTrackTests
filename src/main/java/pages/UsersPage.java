@@ -3,8 +3,8 @@ package pages;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import commonmenus.CommonMenu;
-import commonmenus.Header;
+import menus.CommonMenu;
+import menus.Header;
 import model.User;
 import org.openqa.selenium.By;
 import overlays.CreateUserOverlay;
@@ -12,8 +12,8 @@ import overlays.CreateUserOverlay;
 import static com.codeborne.selenide.Selenide.*;
 
 public class UsersPage {
-    public commonmenus.Header Header = Selenide.page(Header.class);
-    public commonmenus.CommonMenu CommonMenu = Selenide.page(CommonMenu.class);
+    public menus.Header Header = Selenide.page(Header.class);
+    public menus.CommonMenu CommonMenu = Selenide.page(CommonMenu.class);
 
     private SelenideElement createUserBtn = $(By.id("id_l.U.createNewUser"));
     private SelenideElement firstDeleteLink = $(By.xpath("(//td[count(span)=1]/ancestor::tr//a[@cn='l.U.usersList.deleteUser'])[1]"));
@@ -41,6 +41,18 @@ public class UsersPage {
 
     public boolean pageIsVisible() {
         return createUserBtn.isDisplayed();
+    }
+
+    public UsersPage createUser(User user, boolean forcePasswordChange) {
+        DashboardPage dp = page(DashboardPage.class);
+        UsersPage up = page(UsersPage.class);
+
+        CreateUserOverlay ov = up.clickCreateUserBtn();
+        ov.createNewUser(user, forcePasswordChange);
+
+        dp.Header.openUsersPage();
+
+        return page(UsersPage.class);
     }
 }
 

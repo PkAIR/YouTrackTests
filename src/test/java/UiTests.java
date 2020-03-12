@@ -1,12 +1,12 @@
 import basetests.BaseDdtTest;
 import model.User;
 import model.UserFactory;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import overlays.CreateUserOverlay;
-import pages.DashboardPage;
 import pages.UsersPage;
 
 import java.util.stream.Stream;
@@ -16,12 +16,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class UiTests extends BaseDdtTest {
-
+    @DisplayName("Test for Create user overlay being closed")
     @ParameterizedTest
-    @MethodSource("stringIntAndListProvider")
+    @MethodSource("testDataForOverlayClosingProvider")
     public void overlayClosingTest(String method, String message) {
         User testUser = UserFactory.getUserAllFlds();
-        DashboardPage dp = page(DashboardPage.class);
         UsersPage up = page(UsersPage.class);
 
         int curNumOfUsers = up.CommonMenu.getUserNumber();
@@ -43,16 +42,16 @@ public class UiTests extends BaseDdtTest {
         assertEquals(up.CommonMenu.getUserNumber(), curNumOfUsers, message);
     }
 
-    static Stream<Arguments> stringIntAndListProvider() {
+    private static Stream<Arguments> testDataForOverlayClosingProvider() {
         return Stream.of(
                 arguments("cancel", "Number of users changed"),
                 arguments("close", "Number of users changed")
         );
     }
 
+    @DisplayName("Test for Create user overlay is movable")
     @Test
     public void movingCreateUserOverlay() {
-        DashboardPage dp = page(DashboardPage.class);
         UsersPage up = page(UsersPage.class);
 
         CreateUserOverlay ov = up.clickCreateUserBtn();

@@ -7,10 +7,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import overlays.ChangePasswordOverlay;
-import overlays.CreateUserOverlay;
 import pages.DashboardPage;
 import pages.LoginPage;
-import pages.UserDetailPage;
 import pages.UsersPage;
 
 import java.util.stream.Stream;
@@ -31,17 +29,9 @@ public class CreateUserNegativeTests extends BaseDdtTest {
         UsersPage up = page(UsersPage.class);
 
         int curNumOfUsers = up.CommonMenu.getUserNumber();
-        CreateUserOverlay ov = up.clickCreateUserBtn();
-
-        UserDetailPage udp = ov.createNewUser(testUser, true);
-
-        assertTrue(udp.isUserCreated(testUser),
-                String.format("User %s wasn't created", testUser.getUsername()));
-
-        dp.Header.openUsersPage();
+        up.createUser(testUser, true);
         assertTrue(up.CommonMenu.getUserNumber() > curNumOfUsers,
                 "Number of users doesn't change");
-
         assertTrue(up.isUserInTheTable(testUser));
 
         open(baseUrl, DashboardPage.class);
@@ -50,7 +40,7 @@ public class CreateUserNegativeTests extends BaseDdtTest {
     }
 
     @ParameterizedTest
-    @MethodSource("stringIntAndListProvider2")
+    @MethodSource("changePasswordNegativeDataProvider")
     public void changePasswordNegativeTest(String oldPassword, String newPassword, String newPassConfirmation,
                                            String message) {
         ChangePasswordOverlay cpo = page(ChangePasswordOverlay.class);
@@ -62,9 +52,6 @@ public class CreateUserNegativeTests extends BaseDdtTest {
         cpo.changeThePassword(testUser);
         assertEquals(message, cpo.getErrorTooltipText());
         refresh();
-
-        //open(baseUrl, DashboardPage.class);
-        //dp.Header.logOutUser(testUser);
     }
 
     @AfterAll
@@ -74,7 +61,7 @@ public class CreateUserNegativeTests extends BaseDdtTest {
         dp.Header.logOutUser(testUser);
     }
 
-    static Stream<Arguments> stringIntAndListProvider2() {
+    private static Stream<Arguments> changePasswordNegativeDataProvider() {
         return Stream.of(
                 arguments("ololo", "asd", "asd", "Wrong old password"),
                 arguments("test", "", "", "Can't be empty"),
