@@ -1,5 +1,4 @@
-import basetests.BaseTest;
-import basetests.BaseTestOneUser;
+import basetests.BaseDdtTest;
 import model.User;
 import model.UserFactory;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,7 @@ import static com.codeborne.selenide.Selenide.page;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class UiTests extends BaseTestOneUser {
+public class UiTests extends BaseDdtTest {
 
     @ParameterizedTest
     @MethodSource("stringIntAndListProvider")

@@ -1,5 +1,4 @@
-import basetests.BaseTest;
-import basetests.BaseTestOneUser;
+import basetests.BaseNotDdtTest;
 import model.User;
 import model.UserFactory;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ import pages.UsersPage;
 import static com.codeborne.selenide.Selenide.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CreateUserTests extends BaseTest {
+public class CreateUserTests extends BaseNotDdtTest {
     @Test
     public void generalPositiveScenario() {
         User testUser = UserFactory.getUserAllFlds();

@@ -1,4 +1,4 @@
-import basetests.BaseTestOneUser;
+import basetests.BaseDdtTest;
 import model.User;
 import model.UserFactory;
 import org.junit.jupiter.api.AfterAll;
@@ -17,7 +17,7 @@ import static com.codeborne.selenide.Selenide.refresh;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class CreateNegativeTests2 extends BaseTestOneUser {
+public class CreateNegativeTests2 extends BaseDdtTest {
     private static User testUser;
 
     @BeforeAll

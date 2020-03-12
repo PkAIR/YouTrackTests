@@ -1,9 +1,6 @@
 package basetests;
 
 import model.User;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import pages.DashboardPage;
 import pages.LoginPage;
 
@@ -17,8 +14,7 @@ public class BaseTest {
     protected static String baseUrl;
     protected static User rootUser;
 
-    @BeforeAll
-    public static void setUp() throws IOException {
+    public static void commonSetup() throws IOException {
         Properties prop = new Properties();
         prop.load(BaseTest.class.getClassLoader().getResourceAsStream("application.properties"));
         baseUrl = prop.getProperty("base.url");
@@ -27,14 +23,12 @@ public class BaseTest {
                 "", "", "");
     }
 
-    @BeforeEach
-    public void a() {
+    public static void openUsersPage() {
         LoginPage lp = open(baseUrl, LoginPage.class);
         DashboardPage dp = lp.loginAs(rootUser);
         dp.Header.openUsersPage();
     }
 
-    @AfterEach
     public void logOutUser() throws InterruptedException {
         DashboardPage dp = page(DashboardPage.class);
         Thread.sleep(1000);
