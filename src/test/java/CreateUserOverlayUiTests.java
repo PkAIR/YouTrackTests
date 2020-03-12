@@ -1,12 +1,14 @@
 import basetests.BaseDdtTest;
 import model.User;
 import model.UserFactory;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import overlays.CreateUserOverlay;
+import pages.DashboardPage;
 import pages.UsersPage;
 
 import java.util.stream.Stream;
@@ -15,7 +17,7 @@ import static com.codeborne.selenide.Selenide.page;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-public class UiTests extends BaseDdtTest {
+public class CreateUserOverlayUiTests extends BaseDdtTest {
     @DisplayName("Test for Create user overlay being closed")
     @ParameterizedTest
     @MethodSource("testDataForOverlayClosingProvider")
@@ -57,5 +59,11 @@ public class UiTests extends BaseDdtTest {
         CreateUserOverlay ov = up.clickCreateUserBtn();
         assertTrue(ov.wasOverlayMoved(), "Create user overlay can't be moved");
         ov.cancelOverlay();
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        DashboardPage dp = page(DashboardPage.class);
+        dp.Header.logOutUser();
     }
 }

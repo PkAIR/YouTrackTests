@@ -65,7 +65,8 @@ public class NegativeChangePasswordTests extends BaseDdtTest {
         return Stream.of(
                 arguments("ololo", "asd", "asd", "Wrong old password"),
                 arguments("test", "", "", "Can't be empty"),
-                arguments("test", "asd", "a", "Doesn't match New password")
+                arguments("test", "asd", "a", "Doesn't match New password"),
+                arguments("test", "test", "test", "Used same password")
         );
     }
 }
