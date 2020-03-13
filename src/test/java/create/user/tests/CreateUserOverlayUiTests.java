@@ -5,6 +5,7 @@ import model.User;
 import model.UserFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -20,6 +21,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class CreateUserOverlayUiTests extends BaseDdtTest {
     @DisplayName("Test for Create user overlay being closed")
+    @Tag("Regression")
     @ParameterizedTest
     @MethodSource("testDataForOverlayClosingProvider")
     public void overlayClosingTest(String method, String message) {
@@ -46,6 +48,7 @@ public class CreateUserOverlayUiTests extends BaseDdtTest {
     }
 
     @DisplayName("Test for Create user overlay is movable")
+    @Tag("Regression")
     @Test
     public void movingCreateUserOverlay() {
         UsersPage up = page(UsersPage.class);

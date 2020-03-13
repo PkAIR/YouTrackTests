@@ -5,6 +5,7 @@ import model.User;
 import model.UserFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -40,6 +41,7 @@ public class NegativeChangePasswordTests extends BaseDdtTest {
     }
 
     @ParameterizedTest
+    @Tag("Smoke")
     @MethodSource("changePasswordNegativeDataProvider")
     public void changePasswordNegativeTest(String oldPassword, String newPassword, String newPassConfirmation,
                                            String message) {

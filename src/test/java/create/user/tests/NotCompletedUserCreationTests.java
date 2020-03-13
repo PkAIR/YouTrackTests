@@ -6,6 +6,7 @@ import model.UserFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -28,6 +29,7 @@ public class NotCompletedUserCreationTests extends BaseDdtTest {
     }
 
     @DisplayName("Negative tests for user creation")
+    @Tag("Smoke")
     @ParameterizedTest
     @MethodSource("wrongUserDataProvider")
     public void wrongUserTest(String username, String password, String passConfirmation,

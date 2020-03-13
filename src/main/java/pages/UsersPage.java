@@ -37,7 +37,29 @@ public class UsersPage {
     }
 
     public boolean isUserInTheTable(User user) {
-        return $(By.xpath(String.format("//a[@title='%s']", user.getUsername()))).isDisplayed();
+        return $(By.xpath(buildUserRowXpath(user))).isDisplayed();
+    }
+
+    private String buildUserRowXpath(User user) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("//tr[td[a[text()='%s']] ", user.getUsername()));
+        if (!user.getFullName().equals("")) {
+            sb.append(String.format("and td[div[@title='%s']] ", user.getFullName()));
+        }
+        if (!user.getEmail().equals("")) {
+            sb.append(String.format("and td[div[@title='%s']] ", user.getEmail()));
+        }
+        if (!user.getJabber().equals("")) {
+            sb.append(String.format("and td[div[@title='%s']] ", user.getJabber()));
+        }
+
+        sb.append("and td[a[normalize-space(text())='All Users'] ");
+        sb.append("and a[normalize-space(text())='New Users']] ");
+        sb.append("and td[a[normalize-space(text())='Delete'] ");
+        sb.append("and a[normalize-space(text())='Merge'] ");
+        sb.append("and a[normalize-space(text())='Ban']]]");
+
+        return sb.toString();
     }
 
     public boolean pageIsVisible() {

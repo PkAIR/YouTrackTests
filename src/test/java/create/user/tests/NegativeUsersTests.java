@@ -3,6 +3,7 @@ package create.user.tests;
 import base.tests.BaseNotDdtTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import overlays.CreateUserOverlay;
 import overlays.ErrorOverlay;
@@ -13,8 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class NegativeUsersTests extends BaseNotDdtTest {
     @DisplayName("Negative scenario for user creation (user duplication)")
+    @Tag("Smoke")
     @Test
-    public void generalPositiveScenario() {
+    public void userDuplicateCreation() {
         UsersPage up = page(UsersPage.class);
 
         int curNumOfUsers = up.CommonMenu.getUserNumber();
