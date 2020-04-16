@@ -3,7 +3,6 @@ package create.user.tests.admin.pages;
 import base.tests.BaseDdtTest;
 import model.User;
 import model.UserFactory;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;

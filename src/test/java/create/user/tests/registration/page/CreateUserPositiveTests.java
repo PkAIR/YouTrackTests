@@ -1,6 +1,7 @@
 package create.user.tests.registration.page;
 
 import base.tests.BaseNotDdtTest;
+import com.codeborne.selenide.WebDriverRunner;
 import model.User;
 import model.UserActions;
 import model.UserFactory;
@@ -13,45 +14,41 @@ import java.util.ArrayList;
 
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.page;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CreateUserPositiveTests extends BaseNotDdtTest {
-    @DisplayName("General positive scenario for user creation")
+    private static int curNumOfUsers;
+
+    @DisplayName("General positive scenario for user registration page 'Remember Me' off")
     @Tag("Smoke")
     @Test
-    public void generalPositiveScenario() {
-        User testUser = UserFactory.getUserAllFlds();
+    public void generalPositiveScenarioRememberMeOff() {
+        User testUser = UserFactory.getSelfRegistrationUser();
 
         UsersPage up = page(UsersPage.class);
         DashboardPage dp = page(DashboardPage.class);
 
         createUser(testUser, false);
-        assertTrue(up.isUserInTheTableWithActions(testUser, new ArrayList<UserActions>() {
-            {
-                add(UserActions.Delete);
-                add(UserActions.Merge);
-                add(UserActions.Ban);
-            }
-        }), String.format("User '%s' wasn't created", testUser.getUsername()));
-
         checkUserViaLogIn(rootUser, testUser);
-        dp.Header.logOutUser(testUser);
+        dp.Header.logOutUser(rootUser);
     }
 
-    @DisplayName("General positive scenario for user with mandatory fields only creation")
-    @Tag("Regression")
+    @DisplayName("General positive scenario for user registration page 'Remember Me' on")
+    @Tag("Smoke")
     @Test
-    public void generalPositiveScenarioMandatoryFldsOnly() {
-        User testUser = UserFactory.getUserMandatoryFldsOnly();
+    public void generalPositiveScenarioRememberMeOn() {
+        User testUser = UserFactory.getSelfRegistrationUser();
 
         UsersPage up = page(UsersPage.class);
         DashboardPage dp = page(DashboardPage.class);
 
-        createUser(testUser, false);
-        assertTrue(up.isUserInTheTable(testUser), String.format("User '%s' wasn't created", testUser.getUsername()));
+        createUser(testUser, true);
+        assertNotNull(WebDriverRunner.getWebDriver().manage().getCookieNamed("jetbrains.charisma.main.security.PRINCIPAL"),
+                "Cookie was found for 'Remember Me' flag");
 
         checkUserViaLogIn(rootUser, testUser);
-        dp.Header.logOutUser(testUser);
+        dp.Header.logOutUser(rootUser);
     }
 
     @DisplayName("Check for direct link")
@@ -63,21 +60,15 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         openLoginPage();
     }
 
-    private void createUser(User testUser, boolean forcePasswordChange) {
+    private void createUser(User testUser, boolean rememberMeFlag) {
         UsersPage up = page(UsersPage.class);
-        DashboardPage dp = page(DashboardPage.class);
 
-        int curNumOfUsers = up.CommonMenu.getUserNumber();
-        UserDetailPage udp = up.createUser(testUser, forcePasswordChange);
-        assertTrue(udp.isUserCreated(testUser),
-                String.format("User %s wasn't created", testUser.getUsername()));
-        assertTrue(udp.allGroupsAssigned(testUser),
-                String.format("User %s wasn't assigned all groups. Expected groups: %s",
-                        testUser.getUsername(), testUser.getGroups()));
-        assertTrue(up.CommonMenu.getUserNumber() > curNumOfUsers,
-                "Number of users doesn't change");
+        curNumOfUsers = up.CommonMenu.getUserNumber();
+        UserRegistrationPage urp = up.openUserRegistrationPage();
+        DashboardPage dp  = urp.createNewUser(testUser, rememberMeFlag);
 
-        dp.Header.openUsersPage();
+        ProfilePage pp = dp.Header.openProfilePage();
+        assertTrue(pp.allGroupsAssigned(testUser));
     }
 
     private void checkUserViaLogIn(User testUser, User testUser2) {
@@ -85,8 +76,28 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         DashboardPage dp = page(DashboardPage.class);
 
         open(getDashboardUrl(), DashboardPage.class);
-        dp.Header.logOutUser(testUser);
-        lp.loginAs(testUser2);
+        dp.Header.logOutUser(testUser2);
+        lp.loginAs(testUser);
+
+        UsersPage up = dp.Header.openUsersPage();
+        assertTrue(up.CommonMenu.getUserNumber() > curNumOfUsers,
+                "Number of users doesn't change");
+        assertTrue(up.isUserInTheTableWithActions(testUser2, new ArrayList<UserActions>() {
+            {
+                add(UserActions.Delete);
+                add(UserActions.Merge);
+                add(UserActions.Ban);
+            }
+        }), String.format("User '%s' wasn't created", testUser2.getUsername()));
+
+        UserDetailPage udp = up.openUserDetailPage(testUser2);
+        assertTrue(udp.isUserCreated(testUser2),
+                String.format("User %s wasn't created", testUser.getUsername()));
+        assertTrue(udp.allGroupsAssigned(testUser2),
+                String.format("User %s wasn't assigned all groups. Expected groups: %s",
+                        testUser2.getUsername(), testUser2.getGroups()));
+
+        dp.Header.openUsersPage();
     }
 
     private String getDashboardUrl() {

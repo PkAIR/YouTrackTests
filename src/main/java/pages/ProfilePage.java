@@ -18,13 +18,14 @@ public class ProfilePage {
     public boolean allGroupsAssigned(User user) {
         refresh();
         for (UserGroup group : user.getGroups()) {
+            // Skipping 'All Users' group
             if (group.equals(UserGroup.AllUsers)) continue;
             $(By.xpath(String
-                    .format("//div[@id='id_l.U.us.groupsSideBar']//span[@class='vert-list-value' and normalize-space(text())='New Users']",
+                    .format("//div[@id='id_l.U.us.groupsSideBar']//span[@class='vert-list-value' and normalize-space(text())='%s']",
                             group.getGroupName()))).shouldBe(Condition.appear);
         }
 
-        // Avoiding 'All Users' group
+        // Skipping 'All Users' group
         return user.getGroups().size() - 1 == getNumberOfGroups();
     }
 
