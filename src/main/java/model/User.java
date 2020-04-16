@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 public class User {
     private String username;
     private String password;
@@ -9,6 +11,7 @@ public class User {
     private String fullName;
     private String email;
     private String jabber;
+    private ArrayList<UserGroup> groups;
 
     public String getPasswordConfirmation() {
         return passwordConfirmation;
@@ -74,12 +77,26 @@ public class User {
         this.newPasswordConfirmation = newPasswordConfirmation;
     }
 
-    public User(String userName, String password, String fullName, String email, String jabber) {
+    public ArrayList<UserGroup> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(ArrayList<UserGroup> groups) {
+        this.groups = groups;
+    }
+
+    public User(String userName,
+                String password,
+                String fullName,
+                String email,
+                String jabber,
+                ArrayList<UserGroup> groups) {
         this.username = userName;
         this.password = password;
         this.passwordConfirmation = password;
         this.fullName = fullName;
         this.email = email;
         this.jabber = jabber;
+        this.groups = groups;
     }
 }

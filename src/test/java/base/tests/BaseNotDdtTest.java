@@ -14,5 +14,6 @@ public class BaseNotDdtTest extends BaseTest{
     @BeforeEach
     public void beforeEachSetup() {
         openUsersPageAsRootUser();
+        deleteAllUsers();
     }
 }

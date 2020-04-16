@@ -20,12 +20,9 @@ public class ChangePasswordOverlay extends BaseOverlay {
         changePassText.shouldBe(Condition.visible);
         changePasswordOverlay.shouldBe(Condition.visible);
 
-        oldPasswordFld.clear();
-        oldPasswordFld.sendKeys(user.getPassword());
-        newPasswordFld.clear();
-        newPasswordFld.sendKeys(user.getNewPassword());
-        newPasswordConfirmationFld.clear();
-        newPasswordConfirmationFld.sendKeys(user.getNewPasswordConfirmation());
+        oldPasswordFld.setValue(user.getPassword());
+        newPasswordFld.setValue(user.getNewPassword());
+        newPasswordConfirmationFld.setValue(user.getNewPasswordConfirmation());
     }
 
     public void changeThePassword(User user) {
@@ -33,12 +30,5 @@ public class ChangePasswordOverlay extends BaseOverlay {
         okBtn.click();
         user.setPassword(user.getNewPassword());
         user.setPasswordConfirmation(user.getNewPassword());
-    }
-
-    public String getErrorTooltipText() {
-        errorIndicator.shouldBe(Condition.visible);
-        errorIndicator.hover();
-
-        return errorTooltipIndicator.shouldBe(Condition.appears).text();
     }
 }

@@ -1,10 +1,13 @@
 package base.tests;
 
 import model.User;
+import model.UserGroup;
 import pages.DashboardPage;
 import pages.LoginPage;
+import pages.UsersPage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import static com.codeborne.selenide.Selenide.open;
@@ -19,18 +22,37 @@ public class BaseTest {
         prop.load(BaseTest.class.getClassLoader().getResourceAsStream("application.properties"));
         baseUrl = prop.getProperty("base.url");
 
+        ArrayList<UserGroup> rootUserGroups = new ArrayList<UserGroup>() {
+            {
+                add(UserGroup.AllUsers);
+            }
+        };
+
         rootUser = new User(prop.getProperty("rootuser.login"), prop.getProperty("rootuser.password"),
-                "", "", "");
+                "root", "root", "", rootUserGroups);
     }
 
-    public static void openUsersPageAsRootUser() {
-        LoginPage lp = open(baseUrl, LoginPage.class);
+    public static LoginPage openLoginPage() {
+        open(String.format("%s/login", baseUrl));
+
+        return page(LoginPage.class);
+    }
+
+    public static UsersPage openUsersPageAsRootUser() {
+        LoginPage lp = openLoginPage();
         DashboardPage dp = lp.loginAs(rootUser);
         dp.Header.openUsersPage();
+
+        return page(UsersPage.class);
     }
 
     public static void logOutUser() {
         DashboardPage dp = page(DashboardPage.class);
         dp.Header.logOutUser();
+    }
+
+    public static void deleteAllUsers() {
+        UsersPage up = page(UsersPage.class);
+        up.deleteAllUsers();
     }
 }

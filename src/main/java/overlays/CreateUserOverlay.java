@@ -7,7 +7,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.interactions.Coordinates;
 import pages.UserDetailPage;
 
-import static com.codeborne.selenide.Condition.not;
 import static com.codeborne.selenide.Selenide.*;
 
 public class CreateUserOverlay extends BaseOverlay{
@@ -28,22 +27,15 @@ public class CreateUserOverlay extends BaseOverlay{
 
     public void fillTheForm(User user, boolean forcePassChange) {
         createUserOverlay.shouldBe(Condition.visible);
-        loginFld.clear();
-        loginFld.sendKeys(user.getUsername());
-        passFld.clear();
-        passFld.sendKeys(user.getPassword());
-        passConfirmationFld.sendKeys(user.getPasswordConfirmation());
+        loginFld.setValue(user.getUsername());
+        passFld.setValue(user.getPassword());
+        passConfirmationFld.setValue(user.getPasswordConfirmation());
 
-        if (forcePassChange && forceSetPassCheckbox.is(not(Condition.checked))) {
-            forceSetPassCheckbox.click();
-        }
+        forceSetPassCheckbox.setSelected(forcePassChange);
 
-        fullNameFld.clear();
-        fullNameFld.sendKeys(user.getFullName());
-        emailFld.clear();
-        emailFld.sendKeys(user.getEmail());
-        jabberFld.clear();
-        jabberFld.sendKeys(user.getJabber());
+        fullNameFld.setValue(user.getFullName());
+        emailFld.setValue(user.getEmail());
+        jabberFld.setValue(user.getJabber());
     }
 
     public UserDetailPage createNewUser(User user, boolean forcePassChange) {
@@ -65,17 +57,10 @@ public class CreateUserOverlay extends BaseOverlay{
         closeBtn.click();
     }
 
-    public String getErrorTooltipText() {
-        errorIndicator.shouldBe(Condition.visible);
-        errorIndicator.hover();
-
-        return errorTooltipIndicator.shouldBe(Condition.appears).text();
-    }
-
     public boolean wasOverlayMoved() {
         Coordinates oldCoordinates =  createUserOverlay.getCoordinates();
         actions().dragAndDropBy(headerOverlay, 100, 100).perform();
         
-        return !oldCoordinates.equals(createUserOverlay.getCoordinates());
+        return !oldCoordinates.equals(headerOverlay.getCoordinates());
     }
 }

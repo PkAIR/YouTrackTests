@@ -1,4 +1,4 @@
-package create.user.tests;
+package create.user.tests.admin.pages;
 
 import base.tests.BaseDdtTest;
 import model.User;
@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import overlays.CreateUserOverlay;
+import overlays.ErrorOverlay;
 import pages.UsersPage;
 
 import java.util.stream.Stream;
@@ -33,7 +34,7 @@ public class NotCompletedUserCreationTests extends BaseDdtTest {
     @ParameterizedTest
     @MethodSource("wrongUserDataProvider")
     public void wrongUserTest(String username, String password, String passConfirmation,
-                              String message) {
+                              String type, String message) {
         UsersPage up = page(UsersPage.class);
         testUser.setUsername(username);
         testUser.setPassword(password);
@@ -43,22 +44,32 @@ public class NotCompletedUserCreationTests extends BaseDdtTest {
         CreateUserOverlay ov = up.clickCreateUserBtn();
         ov.createNewUser(testUser, false);
 
-        assertEquals(message, ov.getErrorTooltipText());
-        ov.cancelOverlay();
-        assertEquals(curNumOfUsers, up.CommonMenu.getUserNumber(), "Number of users increased!");
-        refresh();
+        try {
+            // TODO Errors should be displayed the same way!
+            if (type.equals("major")) {
+                ErrorOverlay eo = page(ErrorOverlay.class);
+                assertEquals(message, eo.getErrorSeverityText());
+            } else {
+                assertEquals(message, ov.getErrorTooltipText());
+            }
+        }
+        finally {
+            ov.cancelOverlay();
+            assertEquals(curNumOfUsers, up.CommonMenu.getUserNumber(), "Number of users increased!");
+            refresh();
+        }
     }
 
     private static Stream<Arguments> wrongUserDataProvider() {
         return Stream.of(
-                arguments("", "", "", "Login is required!"),
-                arguments("test", "", "", "Password is required!"),
-                arguments("test", "test", "", "Password doesn't match!")
+                arguments("", "", "", "minor", "Login is required!"),
+                arguments("<script>alert(\"test\")</script>", "test", "test", "major", "login shouldn't contain characters \"<\", \"/\", \">\": login"),
+                arguments("test test", "test", "test", "major", "Restricted character ' ' in the name"),
+                arguments(" testtest", "test", "test", "major", "Restricted character ' ' in the name"),
+                arguments("testtest ", "test", "test", "major", "Restricted character ' ' in the name"),
+                arguments(" test test ", "test", "test", "major", "Restricted character ' ' in the name"),
+                arguments("test", "", "", "minor", "Password is required!"),
+                arguments("test", "test", "", "minor", "Password doesn't match!")
         );
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        logOutUser();
     }
 }

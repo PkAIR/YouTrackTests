@@ -1,4 +1,4 @@
-package create.user.tests;
+package create.user.tests.admin.pages;
 
 import base.tests.BaseDdtTest;
 import model.User;
@@ -33,7 +33,7 @@ public class NegativeChangePasswordTests extends BaseDdtTest {
 
         up.createUser(testUser, true);
         dp.Header.openUsersPage();
-        assertTrue(up.isUserInTheTable(testUser));
+        assertTrue(up.isUserInTheTable(testUser), String.format("User '%s' wasn't created", testUser.getUsername()));
 
         open(baseUrl, DashboardPage.class);
         up.Header.logOutUser(rootUser);
@@ -52,14 +52,11 @@ public class NegativeChangePasswordTests extends BaseDdtTest {
         testUser.setNewPasswordConfirmation(newPassConfirmation);
 
         cpo.changeThePassword(testUser);
-        assertEquals(message, cpo.getErrorTooltipText());
-        refresh();
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        open(baseUrl, DashboardPage.class);
-        logOutUser();
+        try {
+            assertEquals(message, cpo.getErrorTooltipText());
+        } finally {
+            refresh();
+        }
     }
 
     private static Stream<Arguments> changePasswordNegativeDataProvider() {

@@ -1,4 +1,4 @@
-package create.user.tests;
+package create.user.tests.admin.pages;
 
 import base.tests.BaseDdtTest;
 import model.User;
@@ -39,10 +39,11 @@ public class CreateUserOverlayUiTests extends BaseDdtTest {
             }
             case "close" : {
                 ov.closeOverlay();
+                break;
             }
         }
 
-        assertTrue(up.pageIsVisible());
+        assertTrue(up.isPageOpened(), "Users page is not opened");
         assertFalse(up.isUserInTheTable(testUser), "User not found in the table");
         assertEquals(up.CommonMenu.getUserNumber(), curNumOfUsers, message);
     }
@@ -56,11 +57,6 @@ public class CreateUserOverlayUiTests extends BaseDdtTest {
         CreateUserOverlay ov = up.clickCreateUserBtn();
         assertTrue(ov.wasOverlayMoved(), "Create user overlay can't be moved");
         ov.cancelOverlay();
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        logOutUser();
     }
 
     private static Stream<Arguments> testDataForOverlayClosingProvider() {

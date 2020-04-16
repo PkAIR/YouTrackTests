@@ -12,6 +12,7 @@ public class ErrorOverlay {
 
     public String getErrorSeverityText() {
         closeBtn.should(Condition.appear);
+
         return errorSeverity.text();
     }
 }
