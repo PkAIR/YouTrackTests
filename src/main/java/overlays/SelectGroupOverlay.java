@@ -19,7 +19,8 @@ public class SelectGroupOverlay {
 
     private void selectGroups(ArrayList<UserGroup> groups, boolean status) {
         for (UserGroup group: groups) {
-            SelenideElement groupCheckbox = $(By.xpath(String.format("//span[text()='%s']/preceding-sibling::span", group)));
+            SelenideElement groupCheckbox = $(By.xpath(String.format("//span[text()='%s']/preceding-sibling::span",
+                    group.getGroupName())));
             okBtn.shouldBe(visible);
 
             if (status) {

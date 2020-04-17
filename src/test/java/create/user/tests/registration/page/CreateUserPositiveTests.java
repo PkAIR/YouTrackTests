@@ -14,8 +14,7 @@ import java.util.ArrayList;
 
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.page;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateUserPositiveTests extends BaseNotDdtTest {
     private static int curNumOfUsers;
@@ -30,6 +29,9 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         DashboardPage dp = page(DashboardPage.class);
 
         createUser(testUser, false);
+        assertNull(WebDriverRunner.getWebDriver().manage().getCookieNamed("jetbrains.charisma.main.security.PRINCIPAL"),
+                "Cookie was found for 'Remember Me' flag");
+
         checkUserViaLogIn(rootUser, testUser);
         dp.Header.logOutUser(rootUser);
     }
