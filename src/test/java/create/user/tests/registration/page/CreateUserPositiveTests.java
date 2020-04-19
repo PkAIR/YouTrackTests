@@ -12,44 +12,40 @@ import pages.*;
 
 import java.util.ArrayList;
 
-import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.page;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CreateUserPositiveTests extends BaseNotDdtTest {
     private static int curNumOfUsers;
+    private static final String COOKIE_NAME = "jetbrains.charisma.main.security.PRINCIPAL";
 
     @DisplayName("General positive scenario for user registration page 'Remember Me' off")
     @Tag("Smoke")
     @Test
     public void generalPositiveScenarioRememberMeOff() {
         User testUser = UserFactory.getSelfRegistrationUser();
-
-        UsersPage up = page(UsersPage.class);
         DashboardPage dp = page(DashboardPage.class);
 
         createUser(testUser, false);
-        assertNull(WebDriverRunner.getWebDriver().manage().getCookieNamed("jetbrains.charisma.main.security.PRINCIPAL"),
+        assertNull(WebDriverRunner.getWebDriver().manage().getCookieNamed(COOKIE_NAME),
                 "Cookie was found for 'Remember Me' flag");
 
-        checkUserViaLogIn(rootUser, testUser);
+        checkUserViaLogIn(testUser);
         dp.Header.logOutUser(rootUser);
     }
 
     @DisplayName("General positive scenario for user registration page 'Remember Me' on")
-    @Tag("Smoke")
+    @Tag("Regression")
     @Test
     public void generalPositiveScenarioRememberMeOn() {
         User testUser = UserFactory.getSelfRegistrationUser();
-
-        UsersPage up = page(UsersPage.class);
         DashboardPage dp = page(DashboardPage.class);
 
         createUser(testUser, true);
-        assertNotNull(WebDriverRunner.getWebDriver().manage().getCookieNamed("jetbrains.charisma.main.security.PRINCIPAL"),
+        assertNotNull(WebDriverRunner.getWebDriver().manage().getCookieNamed(COOKIE_NAME),
                 "Cookie was found for 'Remember Me' flag");
 
-        checkUserViaLogIn(rootUser, testUser);
+        checkUserViaLogIn(testUser);
         dp.Header.logOutUser(rootUser);
     }
 
@@ -57,7 +53,7 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
     @Tag("Smoke")
     @Test
     public void directLinkWorksTest() {
-        UserRegistrationPage urp = open(String.format("%s/registerUserForm", baseUrl), UserRegistrationPage.class);
+        UserRegistrationPage urp = UserRegistrationPage.openUserRegistrationPageLink();
         assertTrue(urp.isPageOpened(), "Direct link doesn't work");
         openLoginPage();
     }
@@ -73,37 +69,32 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         assertTrue(pp.allGroupsAssigned(testUser));
     }
 
-    private void checkUserViaLogIn(User testUser, User testUser2) {
+    private void checkUserViaLogIn(User testUser) {
         LoginPage lp = page(LoginPage.class);
-        DashboardPage dp = page(DashboardPage.class);
+        DashboardPage dp = DashboardPage.openDashboardPageLink();
 
-        open(getDashboardUrl(), DashboardPage.class);
-        dp.Header.logOutUser(testUser2);
-        lp.loginAs(testUser);
+        dp.Header.logOutUser(testUser);
+        lp.loginAs(rootUser);
 
         UsersPage up = dp.Header.openUsersPage();
         assertTrue(up.CommonMenu.getUserNumber() > curNumOfUsers,
                 "Number of users doesn't change");
-        assertTrue(up.isUserInTheTableWithActions(testUser2, new ArrayList<UserActions>() {
+        assertTrue(up.isUserInTheTableWithActions(testUser, new ArrayList<UserActions>() {
             {
                 add(UserActions.Delete);
                 add(UserActions.Merge);
                 add(UserActions.Ban);
             }
-        }), String.format("User '%s' wasn't created", testUser2.getUsername()));
+        }), String.format("User '%s' wasn't created", testUser.getUsername()));
 
-        UserDetailPage udp = up.openUserDetailPage(testUser2);
-        assertTrue(udp.isUserCreated(testUser2),
-                String.format("User %s wasn't created", testUser.getUsername()));
-        assertTrue(udp.allGroupsAssigned(testUser2),
+        UserDetailPage udp = up.openUserDetailPage(testUser);
+        assertTrue(udp.isUserCreated(testUser),
+                String.format("User %s wasn't created", rootUser.getUsername()));
+        assertTrue(udp.allGroupsAssigned(testUser),
                 String.format("User %s wasn't assigned all groups. Expected groups: %s",
-                        testUser2.getUsername(), testUser2.getGroups()));
+                        testUser.getUsername(), testUser.getGroups()));
 
-        dp.Header.openUsersPage();
-    }
-
-    private String getDashboardUrl() {
-        return String.format("%s/Dashboard", baseUrl);
+        dp.Header.openProfilePage();
     }
 }
 

@@ -7,8 +7,7 @@ import org.openqa.selenium.By;
 import overlays.BaseOverlay;
 
 import static com.codeborne.selenide.Condition.cssClass;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.page;
+import static com.codeborne.selenide.Selenide.*;
 
 public class UserRegistrationPage extends BaseOverlay {
     private SelenideElement logInLnk = $(By.xpath("//a[@href='/login']"));
@@ -24,6 +23,12 @@ public class UserRegistrationPage extends BaseOverlay {
     // class unchecked = jt-custom-checkbox login-input
 
     private SelenideElement registerBtn = $(By.id("id_l.R.register"));
+
+    public static UserRegistrationPage openUserRegistrationPageLink() {
+        open("/registerUserForm");
+
+        return page(UserRegistrationPage.class);
+    }
 
     public LoginPage openLoginPage() {
         loginFld.shouldBe(Condition.visible)

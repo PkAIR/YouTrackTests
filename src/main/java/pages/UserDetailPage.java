@@ -64,4 +64,10 @@ public class UserDetailPage {
 
         return page(SelectGroupOverlay.class);
     }
+
+    public String getAddRemoveGroupsLnkText() {
+        refresh();
+
+        return addUserGroupLnk.getText();
+    }
 }

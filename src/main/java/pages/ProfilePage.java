@@ -7,13 +7,18 @@ import model.User;
 import model.UserGroup;
 import org.openqa.selenium.By;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.refresh;
+import static com.codeborne.selenide.Selenide.*;
 
 public class ProfilePage {
     public menus.Header Header = Selenide.page(menus.Header.class);
 
     private SelenideElement groupsCounterSpan = $(By.xpath("//span[@title='Number of groups']"));
+
+    public static ProfilePage openProfilePageLink() {
+        open("/user");
+
+        return page(ProfilePage.class);
+    }
 
     public boolean allGroupsAssigned(User user) {
         refresh();

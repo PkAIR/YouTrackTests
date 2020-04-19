@@ -19,7 +19,7 @@ public class LoginPage {
         return loginFld.has(Condition.enabled);
     }
 
-    public static LoginPage openLoginPage() {
+    public static LoginPage openLoginPageLink() {
         open("/login");
 
         return page(LoginPage.class);

@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import static com.codeborne.selenide.Selenide.page;
+import static com.codeborne.selenide.WebDriverRunner.source;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -42,7 +44,7 @@ public class UserRoleTests extends BaseDdtTest {
 
         testUser.getGroups().add(UserGroup.Reporters);
         assertTrue(upd.allGroupsAssigned(testUser), "Not all groups were found for user on User Detail page");
-        up.openUsersPage();
+        upd.Header.openUsersPage();
         assertTrue(up.isUserInTheTable(testUser), "Not all groups were found for user on Users page");
         checkUserRoles(testUser);
     }
@@ -58,7 +60,7 @@ public class UserRoleTests extends BaseDdtTest {
 
         testUser.getGroups().remove(UserGroup.Reporters);
         assertTrue(upd.allGroupsAssigned(testUser), "Reporters group wasn't deleted on User Detail page");
-        up.openUsersPage();
+        upd.Header.openUsersPage();
         assertTrue(up.isUserInTheTable(testUser), "Reporters group wasn't deleted for user on Users page");
         checkUserRoles(testUser);
     }
@@ -88,10 +90,30 @@ public class UserRoleTests extends BaseDdtTest {
 
         assertTrue(upd.allGroupsAssigned(testUser),
                 String.format("Reporters group was added anyway on User Detail page after '%smethod'", method));
-        up.openUsersPage();
+        upd.Header.openUsersPage();
         assertTrue(up.isUserInTheTable(testUser),
             String.format("Reporters group was added anyway for user on Users page after '%smethod'", method));
         checkUserRoles(testUser);
+    }
+
+    @Test
+    @Order(4)
+    public void deleteAllUserRolesTest() {
+        UsersPage up = page(UsersPage.class);
+        UserDetailPage udp = up.openUserDetailPage(testUser);
+        udp.deleteGroups(new ArrayList<UserGroup>() {{
+            add(UserGroup.NewUsers);
+        }});
+
+        assertEquals("Add to groups", udp.getAddRemoveGroupsLnkText(),
+                String.format("User '%s' has groups in the table on detail page", testUser.getUsername()));
+        testUser.getGroups().remove(UserGroup.NewUsers);
+        udp.Header.openUsersPage();
+        assertTrue(up.isUserInTheTable(testUser), "New Users group wasn't deleted for user on Users page");
+
+        openProfilePageForUser(testUser);
+        assertTrue(source().contains("You have no permissions to view this page"),
+                String.format("User page can be seen by user '%s", testUser.getUsername()));
     }
 
     private static Stream<Arguments> testDataForOverlayClosingProvider() {
@@ -102,14 +124,15 @@ public class UserRoleTests extends BaseDdtTest {
     }
 
     private void checkUserRoles(User testUser) {
-        UsersPage up = page(UsersPage.class);
-        ProfilePage pp = up.Header.openProfilePage();
-        up.Header.logOutUser(rootUser);
-
-        LoginPage lp = page(LoginPage.class);
-        DashboardPage dp = lp.loginAs(testUser);
-        dp.Header.openProfilePage();
+        ProfilePage pp = openProfilePageForUser(testUser);
         assertTrue(pp.allGroupsAssigned(testUser), "Not all groups are assigned for user");
+    }
+
+    private ProfilePage openProfilePageForUser(User testUser) {
+        LoginPage.openLoginPageLink()
+                .loginAs(testUser);
+
+        return ProfilePage.openProfilePageLink();
     }
 
     @AfterEach

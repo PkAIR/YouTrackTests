@@ -104,7 +104,7 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
     @Tag("Smoke")
     @Test
     public void directLinkWorksTest() {
-        UsersPage up = open(String.format("%s/Users", baseUrl), UsersPage.class);
+        UsersPage up = UsersPage.openUsersPageLink();
         assertTrue(up.isPageOpened(), "Direct link doesn't work");
 
         up.Header.logOutUser();
@@ -129,14 +129,10 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
 
     private void checkUserViaLogIn(User testUser, User testUser2) {
         LoginPage lp = page(LoginPage.class);
-        DashboardPage dp = page(DashboardPage.class);
+        DashboardPage dp = DashboardPage.openDashboardPageLink();
 
-        open(getDashboardUrl(), DashboardPage.class);
+        DashboardPage.openDashboardPageLink();
         dp.Header.logOutUser(testUser);
         lp.loginAs(testUser2);
-    }
-
-    private String getDashboardUrl() {
-        return String.format("%s/Dashboard", baseUrl);
     }
 }

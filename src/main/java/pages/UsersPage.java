@@ -27,7 +27,7 @@ public class UsersPage {
     private SelenideElement userCounterSpan = $(By.xpath("//th[normalize-space(text())='Login']/span"));
     private String  UserEditLinkXpathTemplate = "//a[@cn='l.U.usersList.UserLogin.editUser'][@title='%s']";
 
-    public static UsersPage openUsersPage() {
+    public static UsersPage openUsersPageLink() {
         open("/users");
 
         return page(UsersPage.class);

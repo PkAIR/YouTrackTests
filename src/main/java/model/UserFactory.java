@@ -41,7 +41,7 @@ public class UserFactory {
             default:
             case mandatoryFldsOnly: {
                 return new User((faker.cat().name() + faker.artist().name()).replaceAll("\\s+",""),
-                        "123", "", "", "", defaultGroups);
+                        "test", "", "", "", defaultGroups);
             }
         }
     }

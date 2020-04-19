@@ -33,17 +33,16 @@ public class BaseTest {
     }
 
     public static LoginPage openLoginPage() {
-        open(String.format("%s/login", baseUrl));
+        open(baseUrl);
 
-        return page(LoginPage.class);
+        return LoginPage.openLoginPageLink();
     }
 
     public static UsersPage openUsersPageAsRootUser() {
         LoginPage lp = openLoginPage();
         DashboardPage dp = lp.loginAs(rootUser);
-        dp.Header.openUsersPage();
 
-        return page(UsersPage.class);
+        return dp.Header.openUsersPage();
     }
 
     public static void logOutUser() {
