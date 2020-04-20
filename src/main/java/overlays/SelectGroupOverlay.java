@@ -18,18 +18,23 @@ public class SelectGroupOverlay {
     SelenideElement searchFld = $(By.id("id_l.E.EditUserGroups.SelectGroupsDialog.selectGroupMulti"));
 
     private void selectGroups(ArrayList<UserGroup> groups, boolean status) {
+        okBtn.shouldBe(visible);
+
         for (UserGroup group: groups) {
-            SelenideElement groupCheckbox = $(By.xpath(String.format("//span[text()='%s']/preceding-sibling::span",
+            SelenideElement groupCheckbox = $(By.xpath(String.format("//span[text()=\"%s\"]/preceding-sibling::span",
                     group.getGroupName())));
-            okBtn.shouldBe(visible);
 
             if (status) {
                 if (!groupCheckbox.has(cssClass("checked"))) {
-                    groupCheckbox.shouldBe(visible).hover().click();
+                    groupCheckbox.shouldBe(visible)
+                            .hover()
+                            .click();
                 }
             } else {
                 if (groupCheckbox.has(cssClass("checked"))) {
-                    groupCheckbox.shouldBe(visible).hover().click();
+                    groupCheckbox.shouldBe(visible)
+                            .hover()
+                            .click();
                 }
             }
         }

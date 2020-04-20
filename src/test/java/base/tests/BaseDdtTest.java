@@ -10,6 +10,7 @@ public class BaseDdtTest extends BaseTest {
     public static void beforeAll() throws IOException {
         commonSetup();
         openUsersPageAsRootUser();
+        deleteAllUsers();
     }
 
     @AfterAll

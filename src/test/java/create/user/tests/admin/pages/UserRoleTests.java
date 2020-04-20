@@ -8,6 +8,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import overlays.BaseOverlay;
 import overlays.SelectGroupOverlay;
 import pages.*;
 
@@ -23,16 +24,19 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserRoleTests extends BaseDdtTest {
     private static User testUser;
+
     @BeforeAll
     public static void setUp() {
         testUser = UserFactory.getUserMandatoryFldsOnly();
         UsersPage up = page(UsersPage.class);
         UserDetailPage udp = up.createUser(testUser, false);
         assertTrue(udp.isUserCreated(testUser),
-                String.format("User %s wasn't created", testUser.getUsername()));
+                String.format("User '%s' wasn't created", testUser.getUsername()));
         up.Header.openUsersPage();
     }
 
+    @DisplayName("Add 'Reporter' role to user test")
+    @Tag("Smoke")
     @Test
     @Order(1)
     public void addUserRoleTest() {
@@ -49,6 +53,8 @@ public class UserRoleTests extends BaseDdtTest {
         checkUserRoles(testUser);
     }
 
+    @DisplayName("Delete assigned 'Reporter' role from user test")
+    @Tag("Smoke")
     @Test
     @Order(2)
     public void deleteUserRoleTest() {
@@ -65,10 +71,12 @@ public class UserRoleTests extends BaseDdtTest {
         checkUserRoles(testUser);
     }
 
+    @DisplayName("Closing / canceling add group overlay won't add groups test")
+    @Tag("Regression")
     @ParameterizedTest
     @MethodSource("testDataForOverlayClosingProvider")
     @Order(3)
-    public void rolesNotAddedTests(String method) {
+    public void rolesNotAddedTests(BaseOverlay.OverlayActions action) {
         UsersPage up = page(UsersPage.class);
         UserDetailPage upd = up.openUserDetailPage(testUser);
         ArrayList<UserGroup> testGroups = new ArrayList<UserGroup>() {{
@@ -77,25 +85,27 @@ public class UserRoleTests extends BaseDdtTest {
 
         SelectGroupOverlay sgo = upd.openSelectGroupOverlay();
         sgo.checkGroups(testGroups);
-        switch (method) {
-            case "cancel":{
+        switch (action) {
+            case cancel: {
                 sgo.cancelOverlay();
                 break;
             }
-            case "close" : {
+            case close: {
                 sgo.closeOverlay();
                 break;
             }
         }
 
         assertTrue(upd.allGroupsAssigned(testUser),
-                String.format("Reporters group was added anyway on User Detail page after '%smethod'", method));
+                String.format("Reporters group was added anyway on User Detail page after '%smethod'", action));
         upd.Header.openUsersPage();
         assertTrue(up.isUserInTheTable(testUser),
-            String.format("Reporters group was added anyway for user on Users page after '%smethod'", method));
+            String.format("Reporters group was added anyway for user on Users page after '%smethod'", action));
         checkUserRoles(testUser);
     }
 
+    @DisplayName("Delete all assigned groups from user test")
+    @Tag("Regression")
     @Test
     @Order(4)
     public void deleteAllUserRolesTest() {
@@ -113,13 +123,13 @@ public class UserRoleTests extends BaseDdtTest {
 
         openProfilePageForUser(testUser);
         assertTrue(source().contains("You have no permissions to view this page"),
-                String.format("User page can be seen by user '%s", testUser.getUsername()));
+                String.format("User page can be seen by user '%s'", testUser.getUsername()));
     }
 
     private static Stream<Arguments> testDataForOverlayClosingProvider() {
         return Stream.of(
-                arguments("cancel"),
-                arguments("close")
+                arguments(BaseOverlay.OverlayActions.cancel),
+                arguments(BaseOverlay.OverlayActions.close)
         );
     }
 

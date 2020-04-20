@@ -27,7 +27,7 @@ public class NotCompletedUserCreationTests extends BaseDdtTest {
     public static void createUser() {
         testUser = UserFactory.getUserAllFlds();
         UsersPage up = page(UsersPage.class);
-        UserRegistrationPage urp = up.openUserRegistrationPage();
+        up.openUserRegistrationPage();
     }
 
     @DisplayName("Negative tests for user creation")
@@ -45,7 +45,7 @@ public class NotCompletedUserCreationTests extends BaseDdtTest {
         urp.confirmForm();
 
         try {
-            // TODO Errors should be displayed the same way!
+            // Possible issue: Errors should be displayed the same way!
             if (type.equals("major")) {
                 ErrorOverlay eo = page(ErrorOverlay.class);
                 assertEquals(message, eo.getErrorSeverityText());

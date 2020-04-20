@@ -8,6 +8,7 @@ import pages.UsersPage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Properties;
 
 import static com.codeborne.selenide.Selenide.open;
@@ -19,7 +20,8 @@ public class BaseTest {
 
     public static void commonSetup() throws IOException {
         Properties prop = new Properties();
-        prop.load(BaseTest.class.getClassLoader().getResourceAsStream("application.properties"));
+        prop.load(Objects.requireNonNull(BaseTest.class.getClassLoader()
+                .getResourceAsStream("application.properties")));
         baseUrl = prop.getProperty("base.url");
 
         ArrayList<UserGroup> rootUserGroups = new ArrayList<UserGroup>() {
@@ -28,8 +30,13 @@ public class BaseTest {
             }
         };
 
-        rootUser = new User(prop.getProperty("rootuser.login"), prop.getProperty("rootuser.password"),
-                "root", "root", "", rootUserGroups);
+        rootUser = new User(
+                prop.getProperty("rootuser.login"),
+                prop.getProperty("rootuser.password"),
+                prop.getProperty("rootuser.fullname"),
+                prop.getProperty("rootuser.email"),
+                prop.getProperty("rootuser.jabber"),
+                rootUserGroups);
     }
 
     public static LoginPage openLoginPage() {
@@ -51,7 +58,7 @@ public class BaseTest {
     }
 
     public static void deleteAllUsers() {
-        UsersPage up = page(UsersPage.class);
+        UsersPage up = UsersPage.openUsersPageLink();
         up.deleteAllUsers();
     }
 }

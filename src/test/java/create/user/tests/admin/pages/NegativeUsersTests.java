@@ -8,13 +8,13 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import overlays.CreateUserOverlay;
 import overlays.ErrorOverlay;
 import pages.UsersPage;
 
 import java.util.stream.Stream;
 
 import static com.codeborne.selenide.Selenide.page;
+import static com.codeborne.selenide.Selenide.refresh;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -36,27 +36,28 @@ public class NegativeUsersTests extends BaseDdtTest {
             up.Header.openUsersPage();
             assertTrue(up.isUserInTheTable(userUnderTest),
                     String.format("User '%s' wasn't created", userUnderTest.getUsername()));
-            assertTrue(up.CommonMenu.getUserNumber() > curNumOfUsers,
+            assertEquals(up.CommonMenu.getUserNumber(), curNumOfUsers + 1,
                     "Initial test user wasn't created (number of users not increased)");
-            up.createUser(userUnderTest, false);
             curNumOfUsers = up.CommonMenu.getUserNumber();
+            up.createUser(userUnderTest, false);
         }
 
         try {
             ErrorOverlay eo = page(ErrorOverlay.class);
-            assertEquals(message, eo.getErrorSeverityText());
-        } finally {
-            CreateUserOverlay ov = page(CreateUserOverlay.class);
-            ov.cancelOverlay();
+            assertEquals(message, eo.getErrorSeverityText(), "Error message mismatch");
+            refresh();
             assertEquals(curNumOfUsers, up.CommonMenu.getUserNumber(),
-                    "User with the same username was created (number of users increased)");
+                    String.format("User with the same username was created (number of users increased). Username: '%s'",
+                            userUnderTest.getUsername()));
+        } finally {
+            refresh();
         }
     }
 
     private static Stream<Arguments> testDataForUserDuplicateProvider() {
         return Stream.of(
-                arguments("root", "Removing null is prohibited"),
-                arguments("regular", "Value should be unique: login")
+                arguments("regular", "Value should be unique: login"),
+                arguments("root", "Removing null is prohibited")
         );
     }
 }

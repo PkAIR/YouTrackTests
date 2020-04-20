@@ -3,28 +3,29 @@ package create.user.tests.admin.pages;
 import base.tests.BaseDdtTest;
 import model.User;
 import model.UserFactory;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import overlays.BaseOverlay;
 import overlays.CreateUserOverlay;
 import pages.UsersPage;
 
 import java.util.stream.Stream;
 
 import static com.codeborne.selenide.Selenide.page;
+import static com.codeborne.selenide.Selenide.refresh;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class CreateUserOverlayUiTests extends BaseDdtTest {
-    @DisplayName("Test for Create user overlay being closed")
+    @DisplayName("Test for 'Create User' overlay being closed and cancelled")
     @Tag("Regression")
     @ParameterizedTest
     @MethodSource("testDataForOverlayClosingProvider")
-    public void overlayClosingTest(String method, String message) {
+    public void overlayClosingTest(BaseOverlay.OverlayActions action, String message) {
         User testUser = UserFactory.getUserAllFlds();
         UsersPage up = page(UsersPage.class);
 
@@ -32,23 +33,28 @@ public class CreateUserOverlayUiTests extends BaseDdtTest {
         CreateUserOverlay ov = up.clickCreateUserBtn();
 
         ov.fillTheForm(testUser, false);
-        switch (method) {
-            case "cancel":{
+        switch (action) {
+            case cancel:{
                 ov.cancelOverlay();
                 break;
             }
-            case "close" : {
+            case close: {
                 ov.closeOverlay();
                 break;
             }
         }
 
-        assertTrue(up.isPageOpened(), "Users page is not opened");
-        assertFalse(up.isUserInTheTable(testUser), "User not found in the table");
-        assertEquals(up.CommonMenu.getUserNumber(), curNumOfUsers, message);
+        try {
+            assertTrue(up.isPageOpened(), "Users page is not opened");
+            assertFalse(up.isUserInTheTable(testUser), "User not found in the table");
+            assertEquals(up.CommonMenu.getUserNumber(), curNumOfUsers, message);
+        } finally {
+            refresh();
+            assertEquals(curNumOfUsers, up.CommonMenu.getUserNumber(), "Number of users increased!");
+        }
     }
 
-    @DisplayName("Test for Create user overlay is movable")
+    @DisplayName("Test for 'Create User' overlay is movable")
     @Tag("Regression")
     @Test
     public void movingCreateUserOverlay() {
@@ -61,8 +67,8 @@ public class CreateUserOverlayUiTests extends BaseDdtTest {
 
     private static Stream<Arguments> testDataForOverlayClosingProvider() {
         return Stream.of(
-                arguments("cancel", "Number of users changed"),
-                arguments("close", "Number of users changed")
+                arguments(BaseOverlay.OverlayActions.cancel, "Number of users changed for 'cancel' action"),
+                arguments(BaseOverlay.OverlayActions.close, "Number of users changed for 'close' action")
         );
     }
 }

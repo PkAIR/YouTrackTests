@@ -2,7 +2,8 @@ package create.user.tests.admin.pages;
 
 import base.tests.BaseDdtTest;
 import model.User;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -16,11 +17,8 @@ import static com.codeborne.selenide.Selenide.refresh;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class ExtraNegativeCreateUserTests extends BaseDdtTest {
-    @BeforeAll
-    public static void DeleteAllUsers() {
-        deleteAllUsers();
-    }
-
+    @DisplayName("Test for specific username values")
+    @Tag("Regression")
     @ParameterizedTest
     @CsvSource({"&specialTest,a,'','',''",
                 "\\nnewLineUser,a,'','',''",
@@ -40,10 +38,11 @@ public class ExtraNegativeCreateUserTests extends BaseDdtTest {
         UserDetailPage udp = up.createUser(user, false);
         try {
             assertFalse(udp.isUserCreated(user),
-                    String.format("User %s was created", user.getUsername()));
+                    String.format("User with username '%s' was created", user.getUsername()));
         } finally {
             refresh();
             dp.Header.openUsersPage();
+            deleteAllUsers();
         }
     }
 }

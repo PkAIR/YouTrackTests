@@ -38,7 +38,7 @@ public class UsersPage {
     }
 
     public CreateUserOverlay clickCreateUserBtn() {
-        createUserBtn.click();
+        createUserBtn.shouldBe(Condition.enabled).click();
 
         return page(CreateUserOverlay.class);
     }
@@ -46,6 +46,7 @@ public class UsersPage {
     public void deleteAllUsers() {
         for (int i = 0; i < deleteLinks.size(); i++)
         {
+            refresh();
             SelenideElement deleteLink = $(By.xpath("//td[count(span)=1]/span[@class='user-status ']"))
                     .shouldBe(Condition.visible)
                     .closest("tr")
@@ -58,18 +59,14 @@ public class UsersPage {
             try {
                 confirm();
             }
-            catch (Exception e) {
-                deleteLink
-                        .hover()
-                        .click();
-                confirm();
+            catch (Exception ignored) {
             }
         }
     }
 
     public void deleteUser(User user) {
         SelenideElement userEditLnk = $(By.xpath(String.format(UserEditLinkXpathTemplate, user.getUsername())));
-        userEditLnk.shouldBe(Condition.visible);
+        userEditLnk.shouldBe(Condition.enabled);
 
         userEditLnk.closest("tr")
                 .find(By.linkText("Delete"))
@@ -143,7 +140,7 @@ public class UsersPage {
 
     public UserDetailPage openUserDetailPage(User user) {
         SelenideElement userEditLnk = $(By.xpath(String.format(UserEditLinkXpathTemplate, user.getUsername())));
-        userEditLnk.shouldBe(Condition.visible).click();
+        userEditLnk.shouldBe(Condition.enabled).click();
 
         return  page(UserDetailPage.class);
     }

@@ -20,9 +20,13 @@ public class Header {
 
     public LoginPage logOutUser(User user) {
         if (isSmbLoggedIn()) {
-            $(By.xpath(String.format("//span[@class='ring-menu__item__i'][text()='%s']",
-                user.getFullName().equals("") ? user.getUsername() : user.getFullName()))).hover().click();
-            logOutBtn.should(Condition.appear).click();
+            $(By.xpath(String.format("//span[@class='ring-menu__item__i'][text()=\"%s\"]",
+                user.getFullName().equals("") ? user.getUsername() : user.getFullName())))
+                    .shouldBe(Condition.enabled)
+                    .click();
+            logOutBtn.should(Condition.appear)
+                    .hover()
+                    .click();
         }
 
         return page(LoginPage.class);
@@ -30,24 +34,30 @@ public class Header {
 
     public LoginPage logOutUser() {
         if (isSmbLoggedIn()) {
-            userNameLink.click();
-            logOutBtn.click();
+            userNameLink.shouldBe(Condition.enabled).click();
+            logOutBtn
+                    .hover()
+                    .click();
         }
 
         return page(LoginPage.class);
     }
 
     public UsersPage openUsersPage() {
-        gearIcon.click();
-        usersLink.hover().click();
+        gearIcon.shouldBe(Condition.enabled).click();
+        usersLink
+                .hover()
+                .click();
 
         return page(UsersPage.class);
     }
 
     public ProfilePage openProfilePage() {
         if (isSmbLoggedIn()) {
-            userNameLink.click();
-            profileLink.click();
+            userNameLink.shouldBe(Condition.enabled).click();
+            profileLink
+                    .hover()
+                    .click();
         }
 
         return page(ProfilePage.class);

@@ -23,11 +23,11 @@ public class ProfilePage {
     public boolean allGroupsAssigned(User user) {
         refresh();
         for (UserGroup group : user.getGroups()) {
-            // Skipping 'All Users' group
+            // Skipping 'All Users' group - not visible on user profile page
             if (group.equals(UserGroup.AllUsers)) continue;
             $(By.xpath(String
-                    .format("//div[@id='id_l.U.us.groupsSideBar']//span[@class='vert-list-value' and normalize-space(text())='%s']",
-                            group.getGroupName()))).shouldBe(Condition.appear);
+                    .format("//div[@id='id_l.U.us.groupsSideBar']//span[@class='vert-list-value' and normalize-space(text())=\"%s\"]",
+                            group.getGroupName()))).shouldBe(Condition.visible);
         }
 
         // Skipping 'All Users' group
@@ -36,7 +36,7 @@ public class ProfilePage {
 
     public int getNumberOfGroups() {
         refresh();
-        groupsCounterSpan.shouldBe(Condition.appear);
+        groupsCounterSpan.shouldBe(Condition.visible);
 
         return Integer.parseInt(groupsCounterSpan.getText());
     }

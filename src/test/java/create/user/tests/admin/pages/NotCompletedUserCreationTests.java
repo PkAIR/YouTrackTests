@@ -28,7 +28,7 @@ public class NotCompletedUserCreationTests extends BaseDdtTest {
         testUser = UserFactory.getUserAllFlds();
     }
 
-    @DisplayName("Negative tests for user creation")
+    @DisplayName("Negative tests for user creation - not completed user creation")
     @Tag("Smoke")
     @ParameterizedTest
     @MethodSource("wrongUserDataProvider")
@@ -44,7 +44,7 @@ public class NotCompletedUserCreationTests extends BaseDdtTest {
         ov.createNewUser(testUser, false);
 
         try {
-            // TODO Errors should be displayed the same way!
+            // Possible issue: Errors should be displayed the same way!
             if (type.equals("major")) {
                 ErrorOverlay eo = page(ErrorOverlay.class);
                 assertEquals(message, eo.getErrorSeverityText());
@@ -53,9 +53,8 @@ public class NotCompletedUserCreationTests extends BaseDdtTest {
             }
         }
         finally {
-            ov.cancelOverlay();
-            assertEquals(curNumOfUsers, up.CommonMenu.getUserNumber(), "Number of users increased!");
             refresh();
+            assertEquals(curNumOfUsers, up.CommonMenu.getUserNumber(), "Number of users increased!");
         }
     }
 

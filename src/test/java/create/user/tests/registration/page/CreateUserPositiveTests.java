@@ -20,36 +20,36 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
     private static final String COOKIE_NAME = "jetbrains.charisma.main.security.PRINCIPAL";
 
     @DisplayName("General positive scenario for user registration page 'Remember Me' off")
-    @Tag("Smoke")
+    @Tag("Regression")
     @Test
     public void generalPositiveScenarioRememberMeOff() {
         User testUser = UserFactory.getSelfRegistrationUser();
         DashboardPage dp = page(DashboardPage.class);
 
-        createUser(testUser, false);
+        createUserWithRolesCheck(testUser, false);
         assertNull(WebDriverRunner.getWebDriver().manage().getCookieNamed(COOKIE_NAME),
                 "Cookie was found for 'Remember Me' flag");
 
-        checkUserViaLogIn(testUser);
-        dp.Header.logOutUser(rootUser);
+        checkUserOnAdminPages(testUser);
+        dp.Header.logOutUser();
     }
 
     @DisplayName("General positive scenario for user registration page 'Remember Me' on")
-    @Tag("Regression")
+    @Tag("Smoke")
     @Test
     public void generalPositiveScenarioRememberMeOn() {
         User testUser = UserFactory.getSelfRegistrationUser();
         DashboardPage dp = page(DashboardPage.class);
 
-        createUser(testUser, true);
+        createUserWithRolesCheck(testUser, true);
         assertNotNull(WebDriverRunner.getWebDriver().manage().getCookieNamed(COOKIE_NAME),
-                "Cookie was found for 'Remember Me' flag");
+                "Cookie wasn't found for 'Remember Me' flag");
 
-        checkUserViaLogIn(testUser);
-        dp.Header.logOutUser(rootUser);
+        checkUserOnAdminPages(testUser);
+        dp.Header.logOutUser();
     }
 
-    @DisplayName("Check for direct link")
+    @DisplayName("Check for direct link for User Registration page")
     @Tag("Smoke")
     @Test
     public void directLinkWorksTest() {
@@ -58,7 +58,7 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         openLoginPage();
     }
 
-    private void createUser(User testUser, boolean rememberMeFlag) {
+    private void createUserWithRolesCheck(User testUser, boolean rememberMeFlag) {
         UsersPage up = page(UsersPage.class);
 
         curNumOfUsers = up.CommonMenu.getUserNumber();
@@ -69,7 +69,7 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         assertTrue(pp.allGroupsAssigned(testUser));
     }
 
-    private void checkUserViaLogIn(User testUser) {
+    private void checkUserOnAdminPages(User testUser) {
         LoginPage lp = page(LoginPage.class);
         DashboardPage dp = DashboardPage.openDashboardPageLink();
 
@@ -77,7 +77,7 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         lp.loginAs(rootUser);
 
         UsersPage up = dp.Header.openUsersPage();
-        assertTrue(up.CommonMenu.getUserNumber() > curNumOfUsers,
+        assertEquals(up.CommonMenu.getUserNumber(), curNumOfUsers + 1,
                 "Number of users doesn't change");
         assertTrue(up.isUserInTheTableWithActions(testUser, new ArrayList<UserActions>() {
             {
@@ -89,9 +89,9 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
 
         UserDetailPage udp = up.openUserDetailPage(testUser);
         assertTrue(udp.isUserCreated(testUser),
-                String.format("User %s wasn't created", rootUser.getUsername()));
+                String.format("User '%s' wasn't created", rootUser.getUsername()));
         assertTrue(udp.allGroupsAssigned(testUser),
-                String.format("User %s wasn't assigned all groups. Expected groups: %s",
+                String.format("User '%s' wasn't assigned all groups. Expected groups: %s",
                         testUser.getUsername(), testUser.getGroups()));
 
         dp.Header.openProfilePage();

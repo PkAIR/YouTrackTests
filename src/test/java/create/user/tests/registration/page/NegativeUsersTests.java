@@ -29,7 +29,7 @@ public class NegativeUsersTests extends BaseDdtTest {
         urp.confirmForm();
 
         try {
-            assertEquals(message, urp.getErrorTooltipText());
+            assertEquals(message, urp.getErrorTooltipText(), "Error message mismatch");
         } finally {
             refresh();
         }

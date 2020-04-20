@@ -16,12 +16,12 @@ import pages.UsersPage;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.page;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CreateUserPositiveTests extends BaseNotDdtTest {
-    @DisplayName("General positive scenario for user creation")
+    @DisplayName("General positive scenario for user creation. Password change is false")
     @Tag("Smoke")
     @Test
     public void generalPositiveScenario() {
@@ -43,8 +43,8 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         dp.Header.logOutUser(testUser);
     }
 
-    @DisplayName("General positive scenario for user with mandatory fields only creation")
-    @Tag("Regression")
+    @DisplayName("General positive scenario for user with mandatory fields only creation. Password change is false")
+    @Tag("Smoke")
     @Test
     public void generalPositiveScenarioMandatoryFldsOnly() {
         User testUser = UserFactory.getUserMandatoryFldsOnly();
@@ -53,7 +53,8 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         DashboardPage dp = page(DashboardPage.class);
 
         createUser(testUser, false);
-        assertTrue(up.isUserInTheTable(testUser), String.format("User '%s' wasn't created", testUser.getUsername()));
+        assertTrue(up.isUserInTheTable(testUser),
+                String.format("User '%s' wasn't created", testUser.getUsername()));
 
         checkUserViaLogIn(rootUser, testUser);
         dp.Header.logOutUser(testUser);
@@ -77,13 +78,15 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         dp.Header.logOutUser(testUser);
     }
 
-    @DisplayName("General positive scenario with force password change")
+    @DisplayName("General positive scenario with force password change true")
     @Tag("Smoke")
     @Test
     public void generalPositiveScenarioWithForcePass() {
         User testUser = UserFactory.getUserAllFlds();
+
         DashboardPage dp = page(DashboardPage.class);
         UsersPage up = page(UsersPage.class);
+
         createUser(testUser, true);
         assertTrue(up.isUserInTheTable(testUser),
                 String.format("User '%s' wasn't created", testUser.getUsername()));
@@ -100,7 +103,7 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         dp.Header.logOutUser(testUser);
     }
 
-    @DisplayName("Check for direct link")
+    @DisplayName("Check for direct link for Users page")
     @Tag("Smoke")
     @Test
     public void directLinkWorksTest() {
@@ -117,11 +120,11 @@ public class CreateUserPositiveTests extends BaseNotDdtTest {
         int curNumOfUsers = up.CommonMenu.getUserNumber();
         UserDetailPage udp = up.createUser(testUser, forcePasswordChange);
         assertTrue(udp.isUserCreated(testUser),
-                String.format("User %s wasn't created", testUser.getUsername()));
+                String.format("User '%s' wasn't created", testUser.getUsername()));
         assertTrue(udp.allGroupsAssigned(testUser),
-                String.format("User %s wasn't assigned all groups. Expected groups: %s",
+                String.format("User '%s' wasn't assigned all groups. Expected groups: %s",
                         testUser.getUsername(), testUser.getGroups()));
-        assertTrue(up.CommonMenu.getUserNumber() > curNumOfUsers,
+        assertEquals(up.CommonMenu.getUserNumber(), curNumOfUsers + 1,
                 "Number of users doesn't change");
 
         dp.Header.openUsersPage();

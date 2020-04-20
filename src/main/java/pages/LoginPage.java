@@ -14,19 +14,19 @@ public class LoginPage {
     private SelenideElement passwordFld = $(By.id("id_l.L.password"));
     private SelenideElement loginBtn = $(By.id("id_l.L.loginButton"));
 
-
-    public boolean isPageOpened() {
-        return loginFld.has(Condition.enabled);
-    }
-
     public static LoginPage openLoginPageLink() {
         open("/login");
 
         return page(LoginPage.class);
     }
 
+    public boolean isPageOpened() {
+        return loginFld.has(Condition.enabled);
+    }
+
     public DashboardPage loginAs(User user) {
-        loginFld.setValue(user.getUsername());
+        loginFld.shouldBe(Condition.enabled)
+            .setValue(user.getUsername());
         passwordFld.setValue(user.getPassword());
         loginBtn.click();
 
@@ -34,7 +34,8 @@ public class LoginPage {
     }
 
     public UserRegistrationPage openUserRegistrationPage() {
-        registerLnk.shouldBe(Condition.enabled).click();
+        registerLnk.shouldBe(Condition.enabled)
+                .click();
 
         return page(UserRegistrationPage.class);
     }

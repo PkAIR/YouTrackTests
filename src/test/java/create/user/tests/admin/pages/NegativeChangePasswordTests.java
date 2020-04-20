@@ -4,6 +4,7 @@ import base.tests.BaseDdtTest;
 import model.User;
 import model.UserFactory;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -26,21 +27,22 @@ public class NegativeChangePasswordTests extends BaseDdtTest {
     @BeforeAll
     public static void createUser() {
         testUser = UserFactory.getUserAllFlds();
-        LoginPage lp = page(LoginPage.class);
         UsersPage up = page(UsersPage.class);
         DashboardPage dp = page(DashboardPage.class);
 
         up.createUser(testUser, true);
         dp.Header.openUsersPage();
-        assertTrue(up.isUserInTheTable(testUser), String.format("User '%s' wasn't created", testUser.getUsername()));
+        assertTrue(up.isUserInTheTable(testUser),
+                String.format("User '%s' wasn't created", testUser.getUsername()));
 
-        open(baseUrl, DashboardPage.class);
-        up.Header.logOutUser(rootUser);
-        lp.loginAs(testUser);
+        LoginPage
+                .openLoginPageLink()
+                .loginAs(testUser);
     }
 
-    @ParameterizedTest
+    @DisplayName("Negative scenario for change password function")
     @Tag("Smoke")
+    @ParameterizedTest
     @MethodSource("changePasswordNegativeDataProvider")
     public void changePasswordNegativeTest(String oldPassword, String newPassword, String newPassConfirmation,
                                            String message) {
@@ -52,7 +54,7 @@ public class NegativeChangePasswordTests extends BaseDdtTest {
 
         cpo.changeThePassword(testUser);
         try {
-            assertEquals(message, cpo.getErrorTooltipText());
+            assertEquals(message, cpo.getErrorTooltipText(), "Error message mismatch");
         } finally {
             refresh();
         }

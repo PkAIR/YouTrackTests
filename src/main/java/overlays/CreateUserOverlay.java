@@ -58,6 +58,7 @@ public class CreateUserOverlay extends BaseOverlay{
     }
 
     public boolean wasOverlayMoved() {
+        createUserOverlay.shouldBe(Condition.visible);
         Coordinates oldCoordinates =  createUserOverlay.getCoordinates();
         actions().dragAndDropBy(headerOverlay, 100, 100).perform();
         

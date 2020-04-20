@@ -23,6 +23,7 @@ public class UserDetailPage {
     private SelenideElement addUserGroupLnk = $(By.id("id_l.E.EditUserGroups.addUserToGroup"));
 
     public boolean isUserCreated(User user) {
+        usernameSpan.shouldBe(Condition.visible);
         String breadCrumbUserName = usernameSpan.getText();
 
         return (breadCrumbUserName.contains(user.getUsername()) || breadCrumbUserName.contains(user.getFullName()));
@@ -31,21 +32,22 @@ public class UserDetailPage {
     public boolean allGroupsAssigned(User user) {
         refresh();
         for (UserGroup group : user.getGroups()) {
-            $(By.xpath(String.format("//td/a[normalize-space(text())='%s']", group.getGroupName()))).shouldBe(Condition.appear);
+            $(By.xpath(String.format("//td/a[normalize-space(text())=\"%s\"]", group.getGroupName())))
+                    .shouldBe(Condition.visible);
         }
 
         return user.getGroups().size() == getNumberOfGroups();
     }
 
     public void addGroups(ArrayList<UserGroup> groups) {
-        addUserGroupLnk.click();
+        addUserGroupLnk.shouldBe(Condition.enabled).click();
         SelectGroupOverlay sg = page(SelectGroupOverlay.class);
 
         sg.addGroupsToUser(groups);
     }
 
     public void deleteGroups(ArrayList<UserGroup> groups) {
-        addUserGroupLnk.click();
+        addUserGroupLnk.shouldBe(Condition.enabled).click();
         SelectGroupOverlay sg = page(SelectGroupOverlay.class);
 
         sg.removeGroupsFromUser(groups);
@@ -53,14 +55,14 @@ public class UserDetailPage {
 
     public int getNumberOfGroups() {
         refresh();
-        groupsCounterSpan.shouldBe(Condition.appear);
+        groupsCounterSpan.shouldBe(Condition.visible);
         String numberOfGroups = groupsCounterSpan.getText();
 
         return Integer.parseInt(numberOfGroups.replaceAll("\\D+",""));
     }
 
     public SelectGroupOverlay openSelectGroupOverlay() {
-        addUserGroupLnk.click();
+        addUserGroupLnk.shouldBe(Condition.enabled).click();
 
         return page(SelectGroupOverlay.class);
     }
@@ -68,6 +70,6 @@ public class UserDetailPage {
     public String getAddRemoveGroupsLnkText() {
         refresh();
 
-        return addUserGroupLnk.getText();
+        return addUserGroupLnk.shouldBe(Condition.visible).getText();
     }
 }

@@ -12,12 +12,10 @@ public class ChangePasswordOverlay extends BaseOverlay {
     private SelenideElement oldPasswordFld = $(By.id("id_l.U.ChangePasswordDialog.oldPassword"));
     private SelenideElement newPasswordFld = $(By.id("id_l.U.ChangePasswordDialog.newPassword1"));
     private SelenideElement newPasswordConfirmationFld = $(By.id("id_l.U.ChangePasswordDialog.newPassword2"));
-    private SelenideElement changePassText = $(By.xpath("//li[text()='Please change your password!']"));
 
     private SelenideElement okBtn = $(By.id("id_l.U.ChangePasswordDialog.passOk"));
 
     public void fillTheForm(User user) {
-        changePassText.shouldBe(Condition.visible);
         changePasswordOverlay.shouldBe(Condition.visible);
 
         oldPasswordFld.setValue(user.getPassword());
